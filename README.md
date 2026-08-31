@@ -1,6 +1,8 @@
 # DIY-Weather-Clock-Firmware
 
-**English** | [Русское описание](README_RU.md)
+**English** | [Русский](README_RU.md)
+
+**Latest release:** [V2.8.4 — firmware and source downloads](https://github.com/burrem/DIY-Weather-Clock-Firmware-Extended/releases/tag/V2.8.4)
 
 ## Changes from the original V2.0.3 firmware
 
