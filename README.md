@@ -1,8 +1,5 @@
 # DIY-Weather-Clock-Firmware
 
-This is an Alternative firmware for the DIY Weather Clock WiFi kit that can be easily found on Amazon
-or AliExpress. The kit includes a plexiglass structure and three PCB boards:
-
 ## Changes from the original V2.0.3 firmware
 
 - Optional **Netatmo** integration for outdoor temperature, humidity and pressure
@@ -16,6 +13,9 @@ or AliExpress. The kit includes a plexiglass structure and three PCB boards:
 - Improved web streaming for access through NAT/WAN connections
 - 12/24-hour clock, selectable date format, optional seconds and weather icons
 - Automatic timezone/DST handling, Wi-Fi scanning and more robust reconnect behavior
+
+This is an Alternative firmware for the DIY Weather Clock WiFi kit that can be easily found on Amazon
+or AliExpress. The kit includes a plexiglass structure and three PCB boards:
 
 - An ESP-01S module with an ESP8266 MCU
 - An Adafruit OLED display (0.96", 128x64 px)
@@ -229,12 +229,6 @@ and stores it immediately without rebooting or clearing pressure history.
 After every successful SNTP synchronization, `/log` lists the configured time
 servers with their resolved IP addresses and lwIP reachability values. This also
 makes a local NTP source supplied by DHCP (for example a GPS receiver) visible.
-
-V2.3.2 uses an 8 KB TLS receive buffer when the Netatmo server does not offer
-MFLN. This avoids `HTTP -1` token-refresh failures caused by a fragmented ESP-01
-heap. Negative HTTP results now also include the connection error and free heap
-in the device log.
-
 
 ## What you need to compile and install
 
