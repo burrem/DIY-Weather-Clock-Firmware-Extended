@@ -1,5 +1,7 @@
 # DIY-Weather-Clock-Firmware
 
+**English** | [Русское описание](README_RU.md)
+
 ## Changes from the original V2.0.3 firmware
 
 - Optional **Netatmo** integration for outdoor temperature, humidity and pressure
