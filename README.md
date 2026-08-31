@@ -3,6 +3,20 @@
 This is an Alternative firmware for the DIY Weather Clock WiFi kit that can be easily found on Amazon
 or AliExpress. The kit includes a plexiglass structure and three PCB boards:
 
+## Changes from the original V2.0.3 firmware
+
+- Optional **Netatmo** integration for outdoor temperature, humidity and pressure
+- Optional **48-hour pressure history** with 96 samples, MIN/MAX, delta and 12-hour marks
+- Pressure display in **hPa or mmHg**, plus metric and imperial unit selection
+- **Russian OLED interface**, full weekday names and localized weather descriptions
+- **Live web screen** that remotely mirrors the physical 128×64 OLED
+- Browser configuration, remote logs, forced weather refresh and web-based OTA updates
+- Automatic update notifications from this independent GitHub repository
+- NTP synchronization, including DHCP-provided NTP servers and source diagnostics
+- Improved web streaming for access through NAT/WAN connections
+- 12/24-hour clock, selectable date format, optional seconds and weather icons
+- Automatic timezone/DST handling, Wi-Fi scanning and more robust reconnect behavior
+
 - An ESP-01S module with an ESP8266 MCU
 - An Adafruit OLED display (0.96", 128x64 px)
 - An interface PCB that is usually hand-soldered
@@ -89,30 +103,6 @@ showing the clock only.
 
 If the internet goes away for hours and later comes back, the ESP reconnects
 automatically without rebooting.
-
-## Changes from the original firmware
-
-- Metric / Imperial units selection
-- Pressure display in **hPa or mmHg** (handy where mmHg is the norm, e.g. Russia)
-- Optional **48-hour pressure trend** chart using Netatmo readings, with a
-  labelled pressure scale, current value, elapsed period, delta, minimum and maximum
-- Proper timezone handling with automatic DST
-- Optional seconds display
-- Support for cities with spaces and special characters
-- Weather hidden when not available
-- Weather condition icon on the weather screen, with day/night variants (can be turned off)
-- More display options: 12/24-hour time, DD/MM/YYYY or MM/DD/YYYY date, hide the '+' on positive temperatures
-- Configuration web portal always reachable on the network (reconfigure anytime)
-- Wi-Fi network scanner in the config portal (pick your SSID from a list)
-- Optional **Netatmo** integration: show outdoor temperature/humidity and pressure
-  from your own weather station
-- Status icons on the clock screen: a Wi-Fi signal meter and a Netatmo health mark
-- Serial log viewable from a web page (remote debugging without a cable)
-- Over-the-air (OTA) firmware updates from a web page (no cable after the first flash)
-- Automatic **update notification**: the clock checks GitHub for a newer version and
-  tells you (on the OLED, with a beating-heart icon, and on the config page)
-- More predictable behavior
-
 
 ## Netatmo (optional): use your own weather station
 
