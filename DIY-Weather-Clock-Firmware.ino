@@ -309,7 +309,7 @@ bool rebootIn10mins = false;
 // Publish-latest-json GitHub Action (see .github/workflows/).
 static const char UPDATE_JSON_HOST[] = "raw.githubusercontent.com";
 static const char UPDATE_JSON_URL[]  =
-  "https://raw.githubusercontent.com/bultza/DIY-Weather-Clock-Firmware/main/firmware/latest.json";
+  "https://raw.githubusercontent.com/burrem/DIY-Weather-Clock-Firmware-Extended/main/firmware/latest.json";
 
 bool   g_updateAvailable = false;   // set by checkFirmwareUpdate()
 String g_latestVersion   = "";      // remote version string when newer than ours
@@ -845,7 +845,7 @@ void beginWebServer()
     page += "<h2>Device Configuration</h2>";
     page += "<p style='text-align:center;margin:-8px 0 16px;font-size:13px;color:#666;'>Firmware ";
     page += FW_VERSION;
-    page += " &middot; <a href='https://github.com/bultza/DIY-Weather-Clock-Firmware' target='_blank'>Project page</a></p>";
+    page += " &middot; <a href='https://github.com/burrem/DIY-Weather-Clock-Firmware-Extended' target='_blank'>Project page</a></p>";
 
     // Red "new firmware available" banner (set by checkFirmwareUpdate()).
     if (g_updateAvailable)
@@ -1387,7 +1387,7 @@ void handleCredits()
   page += "h2{text-align:center;color:#222;}li{margin:10px 0;}a{color:#3f51b5;}";
   page += "</style></head><body><div class='container'>";
   page += "<h2>Credits</h2><ul>";
-  page += "<li>Firmware: <a href='https://github.com/bultza/DIY-Weather-Clock-Firmware' target='_blank'>DIY-Weather-Clock-Firmware</a> (" FW_VERSION ")</li>";
+  page += "<li>Firmware: <a href='https://github.com/burrem/DIY-Weather-Clock-Firmware-Extended' target='_blank'>DIY-Weather-Clock-Firmware-Extended</a> (" FW_VERSION ")</li>";
   page += "<li>Weather data: <a href='https://github.com/chubin/wttr.in' target='_blank'>wttr.in</a></li>";
   page += "<li>Weather icons: <a href='https://github.com/Dhole/weather-pixel-icons' target='_blank'>Dhole's pixel weather icons</a> (CC BY-SA 4.0)</li>";
   page += "<li>Original firmware / inspiration: <a href='https://www.whynot.org.ua/en/electronic-kits/hu-061-diy-kit-wi-fi-weather-forecast-clock' target='_blank'>WHYNOT blog (HU-061 kit)</a></li>";

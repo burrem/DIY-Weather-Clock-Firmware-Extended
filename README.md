@@ -208,6 +208,11 @@ it on a 128x64 Canvas with pixel smoothing disabled. No duplicate framebuffer is
 allocated on the ESP-01. The Canvas applies the same 180-degree orientation as
 the physical OLED.
 
+<div align="center">
+<img src="docs/live_web_screen.png" alt="Live web screen mirroring the OLED" width="100%"/>
+<br/>Live web screen with Russian OLED localization
+</div>
+
 The web interface has no Internet-grade authentication. Use it only on a trusted
 local network or through a VPN; do not forward the ESP web-server port directly
 to the Internet.
