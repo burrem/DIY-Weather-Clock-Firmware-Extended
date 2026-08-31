@@ -8,7 +8,7 @@ or AliExpress. The kit includes a plexiglass structure and three PCB boards:
 - An interface PCB that is usually hand-soldered
 
 <div align="center">
-<img src="docs/photo_clock_composition.jpg" alt="Picture of the Clock and Weather face" width="80%"/>
+<img src="https://raw.githubusercontent.com/burrem/DIY-Weather-Clock-Firmware-Extended/main/docs/photo_clock_composition.jpg" alt="Picture of the Clock and Weather face" width="80%"/>
 <br/>Clock Face on the left, Weather face on the right
 </div>
 
@@ -30,7 +30,7 @@ modified and cleaned up to:
 - support for **Netatmo** weather stations (this is optional)
 
 <div align="center">
-<img src="tools/screen_sim/screens.png" alt="Different possible Weather faces samples" width="80%"/>
+<img src="https://raw.githubusercontent.com/burrem/DIY-Weather-Clock-Firmware-Extended/main/tools/screen_sim/screens.png" alt="Different possible Weather faces samples" width="80%"/>
 <br/>Different Faces examples showing different possible customizations
 </div>
 
@@ -53,7 +53,7 @@ If the signature is not found:
   - Optionally, a **Netatmo** weather station (see the Netatmo section below)
 
 <div align="center">
-<img src="docs/ESP8266_web_config.png" alt="Screenshot of the configuration website" width="50%"/>
+<img src="https://raw.githubusercontent.com/burrem/DIY-Weather-Clock-Firmware-Extended/main/docs/ESP8266_web_config.png" alt="Screenshot of the configuration website" width="50%"/>
 <br/>Configuration web screenshot
 </div>
 Once configured and rebooted:
@@ -209,7 +209,7 @@ allocated on the ESP-01. The Canvas applies the same 180-degree orientation as
 the physical OLED.
 
 <div align="center">
-<img src="docs/live_web_screen.png" alt="Live web screen mirroring the OLED" width="100%"/>
+<img src="https://raw.githubusercontent.com/burrem/DIY-Weather-Clock-Firmware-Extended/main/docs/live_web_screen.png" alt="Live web screen mirroring the OLED" width="100%"/>
 <br/>Live web screen with Russian OLED localization
 </div>
 
@@ -266,7 +266,7 @@ Hardware:
 > :warning: GPIO2 needs a 12kohm pullup if you use another ESP-01 module that is not coming from the clock DIY kit.
 
 <div align="center">
-<img src="docs/photo_programming_02.jpg" alt="Picture of the ESP-01 USB adapter board with the ESP-01 connected and the GPIO0 connected to GND to enter in programming mode" width="70%"/>
+<img src="https://raw.githubusercontent.com/burrem/DIY-Weather-Clock-Firmware-Extended/main/docs/photo_programming_02.jpg" alt="Picture of the ESP-01 USB adapter board with the ESP-01 connected and the GPIO0 connected to GND to enter in programming mode" width="70%"/>
 <br/>ESP-01 USB adapter board with the ESP-01 connected and the GPIO0 connected to GND to enter in programming mode.
 </div>
 
