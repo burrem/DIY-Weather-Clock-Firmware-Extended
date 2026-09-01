@@ -6,17 +6,12 @@
 
 ## Changes from the original V2.0.3 firmware
 
-- Optional **Netatmo** integration for outdoor temperature, humidity and pressure
 - Optional **48-hour pressure history** with 96 samples, MIN/MAX, delta and 12-hour marks
 - Pressure display in **hPa or mmHg**, plus metric and imperial unit selection
 - **Russian OLED interface**, full weekday names and localized weather descriptions
 - **Live web screen** that remotely mirrors the physical 128×64 OLED
-- Browser configuration, remote logs, forced weather refresh and web-based OTA updates
-- Automatic update notifications from this independent GitHub repository
 - NTP synchronization, including DHCP-provided NTP servers and source diagnostics
 - Improved web streaming for access through NAT/WAN connections
-- 12/24-hour clock, selectable date format, optional seconds and weather icons
-- Automatic timezone/DST handling, Wi-Fi scanning and more robust reconnect behavior
 
 This is an Alternative firmware for the DIY Weather Clock WiFi kit that can be easily found on Amazon
 or AliExpress. The kit includes a plexiglass structure and three PCB boards:
