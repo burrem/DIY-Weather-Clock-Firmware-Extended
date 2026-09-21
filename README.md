@@ -2,16 +2,21 @@
 
 **English** | [Русский](README_RU.md)
 
-**Latest release:** [V2.8.4 — firmware and source downloads](https://github.com/burrem/DIY-Weather-Clock-Firmware-Extended/releases/tag/V2.8.4)
+**Latest release:** [V2.8.5 — firmware and source downloads](https://github.com/burrem/DIY-Weather-Clock-Firmware-Extended/releases/tag/V2.8.5)
 
 ## Changes from the original V2.0.3 firmware
 
+- Optional **Netatmo** integration for outdoor temperature, humidity and pressure
 - Optional **48-hour pressure history** with 96 samples, MIN/MAX, delta and 12-hour marks
 - Pressure display in **hPa or mmHg**, plus metric and imperial unit selection
 - **Russian OLED interface**, full weekday names and localized weather descriptions
 - **Live web screen** that remotely mirrors the physical 128×64 OLED
+- Browser configuration, remote logs, forced weather refresh and web-based OTA updates
+- Automatic update notifications from this independent GitHub repository
 - NTP synchronization, including DHCP-provided NTP servers and source diagnostics
 - Improved web streaming for access through NAT/WAN connections
+- 12/24-hour clock, selectable date format, optional seconds and weather icons
+- Automatic timezone/DST handling, Wi-Fi scanning and more robust reconnect behavior
 
 This is an Alternative firmware for the DIY Weather Clock WiFi kit that can be easily found on Amazon
 or AliExpress. The kit includes a plexiglass structure and three PCB boards:
@@ -157,9 +162,11 @@ Notes:
 
 ### 48-hour pressure trend screen
 
-When Netatmo is enabled, the configuration portal can add a third screen to the
-15-second display rotation. Enable **Pressure trend screen** and reboot the clock.
-The screen appears after the first successful Netatmo pressure reading.
+The configuration portal can add a third screen to the 15-second display
+rotation. Enable **Pressure trend screen** and reboot the clock. The screen
+appears after the first successful pressure reading. It uses Netatmo when
+available and automatically falls back to wttr.in when Netatmo is disabled or
+temporarily unavailable.
 
 The clock records one pressure point every 30 minutes and keeps 96 readings in
 RAM. Every sample is plotted, giving the complete 48-hour chart half-hour

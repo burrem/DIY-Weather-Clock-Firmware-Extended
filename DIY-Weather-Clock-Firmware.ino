@@ -43,7 +43,7 @@
 #include "netatmo.h"         // Netatmo Weather API client (token refresh + getstationsdata)
 
 // Firmware version (bump this on each release)
-#define FW_VERSION "V2.8.4"
+#define FW_VERSION "V2.8.5"
 
 // Pin definitions (ESP-01):
 const uint8_t SDA_PIN = 0;           // I2C SDA connected to GPIO0
@@ -93,7 +93,9 @@ class ChunkedResponse
 
   bool writeAll(const uint8_t *p, size_t n)
   {
-    WiFiClient &c = server.client();
+    // Newer ESP8266 cores return server.client() by value. WiFiClient copies
+    // share the underlying TCP connection, and also compile with older cores.
+    WiFiClient c = server.client();
     while (n && c.connected())
     {
       size_t sent = c.write(p, n);
@@ -117,7 +119,7 @@ public:
     if (!ok || !buf.length()) return;
     char head[12];
     int hn = snprintf(head, sizeof(head), "%x\r\n", (unsigned)buf.length());
-    WiFiClient &c = server.client();
+    WiFiClient c = server.client();
     ok = writeAll((const uint8_t *)head, hn)
       && writeAll((const uint8_t *)buf.c_str(), buf.length())
       && writeAll((const uint8_t *)"\r\n", 2)
@@ -243,7 +245,7 @@ bool     config_time12h           = false;  //12-hour clock (AM/PM) instead of 2
 bool     config_dateUS            = false;  //date as MM/DD/YYYY instead of DD/MM/YYYY
 bool     config_showWeatherIcon   = true;   //show a weather icon on the weather screen
 bool     config_pressure_mmhg     = false;  //show pressure in mmHg instead of hPa (applies to hPa/metric + Netatmo)
-bool     config_showPressureTrend = false;  //add a 48-hour Netatmo pressure chart to the screen rotation
+bool     config_showPressureTrend = false;  //add a 48-hour pressure chart to the screen rotation
 bool     config_displayRussian    = false;  //Russian text on the physical OLED (web UI stays English)
 
 // Netatmo (V2.0.0): when enabled, the user's own station provides temp/humidity
@@ -277,6 +279,7 @@ String weather_cond    = "";
 String weather_hum     = "";
 String weather_wind    = "";
 String weather_press   = "";
+float  latestWttrPressureHpa = 0.0f; // normalized source for history fallback
 bool   weather_valid   = false;
 int    weather_code    = 0;     // WWO condition code from wttr.in (%i), selects the icon
 time_t weather_lastSuccessfulUpdate = 0;
@@ -986,7 +989,7 @@ void beginWebServer()
     page += "<div class='row'><label>Pressure trend screen:</label>";
     page += "<div class='checkwrap'><input type='checkbox' name='showpressuretrend' value='1'";
     if (config_showPressureTrend) page += " checked";
-    page += "><span>Show 48-hour Netatmo chart</span></div></div>";
+    page += "><span>Show 48-hour pressure chart</span></div></div>";
     page += "<div class='hint' style='margin:-4px 0 6px 0;'>History fills while the clock is running and resets after a reboot.</div>";
 
     // Time format radio (24h / 12h)
@@ -2090,7 +2093,17 @@ static bool parseLeadingFloat(const String &s, float &out)
 // own units, so the user should set the Netatmo account to match the clock units.
 void applyNetatmoOverlay()
 {
-  if (!config_netatmo_enabled || !weather_valid) return;
+  if (!weather_valid) return;
+
+  // The trend is useful without a Netatmo station too. wttr.in is less precise
+  // (usually whole hPa) but still provides enough resolution for a 48-hour
+  // weather trend. Prefer Netatmo when configured and available; otherwise
+  // keep recording the normalized wttr.in pressure.
+  if (!config_netatmo_enabled)
+  {
+    recordPressureSample(latestWttrPressureHpa);
+    return;
+  }
 
   netatmoLastAttemptMs = millis();
   NetatmoReadings nr;
@@ -2102,6 +2115,7 @@ void applyNetatmoOverlay()
     netatmoConsecFails++;   // drives the "!" indicator on the clock screen
     Log.print(F("[netatmo] update failed; keeping wttr.in values (consec fails="));
     Log.print(netatmoConsecFails); Log.println(F(")"));
+    recordPressureSample(latestWttrPressureHpa);
     return;
   }
 
@@ -2121,6 +2135,10 @@ void applyNetatmoOverlay()
   {
     weather_press = formatPressureHpa(nr.pressure);
     recordPressureSample(nr.pressure);
+  }
+  else
+  {
+    recordPressureSample(latestWttrPressureHpa);
   }
 
   Log.print(F("[netatmo] overlay applied from '")); Log.print(nr.station);
@@ -2978,7 +2996,14 @@ void drawPressureTrendScreen()
   current += config_pressure_mmhg ? F("mm") : F("hPa");
   display.setCursor(128 - classicTextWidth(current), 0); display.print(current);
 
-  const int axisX = 23, graphTop = 10, graphBottom = 54;
+  // Leave the same two-pixel gap between scale labels and their ticks for both
+  // three-digit mmHg and four-digit hPa values. With four digits the axis moves
+  // right, but 96 one-pixel samples still fit through x=126.
+  String scaleMaxText = String((int)lroundf(scaleMax / 10.0f));
+  String scaleMinText = String((int)lroundf(scaleMin / 10.0f));
+  const int widestScaleLabel = max(classicTextWidth(scaleMaxText), classicTextWidth(scaleMinText));
+  const int axisX = max(23, widestScaleLabel + 5);
+  const int graphTop = 10, graphBottom = 54;
   display.drawFastVLine(axisX, graphTop, graphBottom - graphTop + 1, SSD1306_WHITE);
   display.drawFastHLine(axisX, graphBottom, 128 - axisX, SSD1306_WHITE);
   // Twelve-hour divisions on the fixed 48-hour timeline (24 samples each).
@@ -3271,10 +3296,20 @@ bool getWeather()
   // Metric wttr.in gives hPa: re-format it through the configured unit (hPa/mmHg).
   // Imperial gives inHg, which we leave exactly as received (mmHg is hPa-only).
   weather_press = pressStr;
-  if (!config_imperial)
+  latestWttrPressureHpa = 0.0f;
+  float pressureNumeric;
+  if (parseLeadingFloat(pressStr, pressureNumeric))
   {
-    float hpa;
-    if (parseLeadingFloat(pressStr, hpa)) weather_press = formatPressureHpa(hpa);
+    if (config_imperial)
+    {
+      // wttr.in imperial pressure is inHg; normalize it for history storage.
+      latestWttrPressureHpa = pressureNumeric * 33.8638867f;
+    }
+    else
+    {
+      latestWttrPressureHpa = pressureNumeric;
+      weather_press = formatPressureHpa(pressureNumeric);
+    }
   }
   weather_code = codeStr.toInt();   // WWO condition code, used to pick the icon
   if (config_displayRussian)
