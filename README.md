@@ -2,7 +2,25 @@
 
 **English** | [Русский](README_RU.md)
 
-**Latest release:** [V2.8.5 — firmware and source downloads](https://github.com/burrem/DIY-Weather-Clock-Firmware-Extended/releases/tag/V2.8.5)
+**Latest release:** [V2.8.6 — firmware and source downloads](https://github.com/burrem/DIY-Weather-Clock-Firmware-Extended/releases/tag/V2.8.6)
+
+## What's new in V2.8.6
+
+- **Stability:** fixes the most likely cause of the periodic reboots seen on
+  V2.8.4/V2.8.5. The BearSSL stack used by HTTPS (Netatmo, update check) is
+  allocated once at boot instead of on every request, and TLS requests are
+  skipped when memory is low. Tested for over 9 days without a reboot.
+- **Pressure history survives reboots:** the 48-hour chart is mirrored to RTC
+  memory and survives crashes, reboots and OTA updates (not a power loss).
+- **No more chart spikes:** with Netatmo enabled, a failed Netatmo request no
+  longer records the wttr.in pressure, which usually differs by several hPa.
+- **Diagnostics in `/log`:** reset reason, the firmware's last activity and
+  uptime before a reset, crash details and free memory.
+- **Smaller image:** the PlatformIO build drops unused float `printf`/`scanf`
+  support, keeping the firmware below the ~512 KB OTA limit. Build with
+  PlatformIO; an Arduino IDE build is ~7 KB larger.
+
+See [RELEASE_NOTES_V2.8.6.md](RELEASE_NOTES_V2.8.6.md) for details.
 
 ## Changes from the original V2.0.3 firmware
 
@@ -86,7 +104,10 @@ Once configured and rebooted:
 - The configuration web portal stays available at the device's **IP (shown on the OLED at boot for 8 seconds)**, so you can reconfigure it from a browser at any time — no need
   to force AP mode or re-flash
 - The device's serial log is kept in a small RAM buffer and can be viewed from a
-  web page, so you can debug the clock over Wi-Fi without a serial cable.
+  web page, so you can debug the clock over Wi-Fi without a serial cable. The top
+  of `/log` shows the last reset reason, what the firmware was doing and its
+  uptime just before that reset, details of the previous crash (if any) and the
+  current and minimum free heap.
 - Successful wttr.in updates log temperature, localized condition, humidity,
   wind, pressure and the WWO code; periodic sun-data responses also log dawn,
   sunrise, sunset and dusk.
@@ -164,9 +185,11 @@ Notes:
 
 The configuration portal can add a third screen to the 15-second display
 rotation. Enable **Pressure trend screen** and reboot the clock. The screen
-appears after the first successful pressure reading. It uses Netatmo when
-available and automatically falls back to wttr.in when Netatmo is disabled or
-temporarily unavailable.
+appears after the first successful pressure reading. With Netatmo enabled the
+history records only the station's pressure; if Netatmo is temporarily
+unavailable, that half-hour sample is skipped rather than filled from wttr.in,
+whose pressure usually differs by several hPa and would draw a spike. With
+Netatmo disabled the history uses wttr.in.
 
 The clock records one pressure point every 30 minutes and keeps 96 readings in
 RAM. Every sample is plotted, giving the complete 48-hour chart half-hour
@@ -192,8 +215,9 @@ above the footer text origin to match the letters visually.
 Minimum, maximum and delta are calculated from the same original 30-minute
 samples shown by the line.
 
-Pressure history is deliberately kept in RAM to avoid frequent EEPROM flash
-writes. It therefore starts over after a reboot, power loss, or OTA update.
+Pressure history is kept in RAM and mirrored to the ESP8266's RTC memory
+instead of EEPROM, to avoid flash wear. It survives crashes, reboots and OTA
+updates of a compatible version, but starts over after a power loss.
 
 ### Live web screen
 
